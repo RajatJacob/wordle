@@ -9,41 +9,62 @@ const WORD_LEN int = 5
 const GUESS_COUNT int = 6
 
 type Game struct {
-	guesses [GUESS_COUNT]guess
-	n       int
-	words   []string
+	guesses []guess
+	words   set
 }
 
 func Create() Game {
-	return Game{[GUESS_COUNT]guess{}, 0, Words()}
-}
-
-func (g *Game) isValidWord(word string) bool {
-	for i := 0; i < len(g.words); i++ {
-		if strings.EqualFold(strings.ToUpper(word), strings.ToUpper(g.words[i])) {
-			return true
-		}
-	}
-	return false
+	return Game{[]guess{}, Words()}
 }
 
 func (g *Game) Guess(word string, scores [WORD_LEN]int) error {
 	if len(word) != WORD_LEN {
 		return errors.New("only 5-character strings are allowed")
 	}
-	if g.n >= GUESS_COUNT {
+	if len(g.guesses) >= GUESS_COUNT {
 		return errors.New("guess limit reached")
 	}
-	if !g.isValidWord(word) {
+	if !g.words.has(word) {
 		return errors.New("invalid word")
 	}
-	g.guesses[g.n] = guess{strings.ToUpper(word), scores}
-	g.n++
+	g.guesses = append(g.guesses, guess{strings.ToUpper(word), scores})
 	return nil
 }
 
 func (g *Game) Print() {
-	for i := 0; i < g.n; i++ {
-		g.guesses[i].print()
+	for _, guess := range g.guesses {
+		guess.print()
 	}
+	println(strings.Join(g.possibleWords().elements(), "\n"))
+}
+
+func includes(word string, char byte) bool {
+	for _, s := range word {
+		if s == rune(char) {
+			return true
+		}
+	}
+	return false
+}
+
+func (g *Game) removeRemoveInvalidWords(guess *guess, i int) {
+	for _, word := range g.words.elements() {
+		cond := map[int]bool{
+			BLACK:  !includes(word, guess.word[i]),
+			YELLOW: word[i] != guess.word[i] && includes(word, guess.word[i]),
+			GREEN:  word[i] == guess.word[i],
+		}[guess.score[i]]
+		if !cond {
+			g.words.delete(word)
+		}
+	}
+}
+
+func (g *Game) possibleWords() *set {
+	for _, guess := range g.guesses {
+		for i := range guess.score {
+			g.removeRemoveInvalidWords(&guess, i)
+		}
+	}
+	return &g.words
 }

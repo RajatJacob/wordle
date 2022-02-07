@@ -14,8 +14,8 @@ type guess struct {
 func (g *guess) print() {
 	reset := "\x1b[0m"
 	colours := [3]string{"\x1b[40m", "\x1b[43m", "\x1b[42m"}
-	for i := 0; i < WORD_LEN; i++ {
-		print(colours[g.score[i]], " ", g.word[i:i+1], " ")
+	for i, x := range g.word {
+		print(colours[g.score[i]], " ", string(x), " ")
 	}
 	print(reset, "\n")
 }
