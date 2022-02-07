@@ -35,7 +35,12 @@ func (g *Game) Print() {
 	for _, guess := range g.guesses {
 		guess.print()
 	}
-	println(strings.Join(g.possibleWords().elements(), "\n"))
+	words := g.possibleWords().elements()
+	if len(words) > 10 {
+		words = words[:10]
+	}
+	println()
+	println(strings.Join(words, "\n"))
 }
 
 func includes(word string, char byte) bool {
