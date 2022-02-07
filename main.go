@@ -9,6 +9,7 @@ import (
 func main() {
 	fmt.Println("wordle-bot")
 	g := game.Create()
-	g.Guess("WORDS")
+	g.Print()
+	g.Guess("WORDS", [game.WORD_LEN]int{0, 1, 2, 1, 2})
 	g.Print()
 }
