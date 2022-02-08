@@ -11,10 +11,11 @@ const GUESS_COUNT int = 6
 type Game struct {
 	guesses []guess
 	words   set
+	letters map[rune]int
 }
 
 func Create() Game {
-	return Game{[]guess{}, Words()}
+	return Game{[]guess{}, Words(), make(map[rune]int)}
 }
 
 func (g *Game) Guess(word string, scores [WORD_LEN]int) error {
@@ -28,6 +29,12 @@ func (g *Game) Guess(word string, scores [WORD_LEN]int) error {
 		return errors.New("invalid word")
 	}
 	g.guesses = append(g.guesses, guess{strings.ToUpper(word), scores})
+	for i := range word {
+		colour, ok := g.letters[rune(word[i])]
+		if !ok || colour < scores[i] {
+			g.letters[rune(word[i])] = scores[i]
+		}
+	}
 	return nil
 }
 
@@ -36,11 +43,13 @@ func (g *Game) Print() {
 		guess.print()
 	}
 	words := g.possibleWords().elements()
+	println("\n")
+	println(len(words), "words\n")
 	if len(words) > 10 {
 		words = words[:10]
 	}
-	println()
 	println(strings.Join(words, "\n"))
+	println(len(g.letters), "/", 26)
 }
 
 func includes(word string, char byte) bool {
@@ -59,6 +68,8 @@ func (g *Game) removeRemoveInvalidWords(guess *guess, i int) {
 			YELLOW: word[i] != guess.word[i] && includes(word, guess.word[i]),
 			GREEN:  word[i] == guess.word[i],
 		}[guess.score[i]]
+		_, ok := g.letters[rune(word[i])]
+		cond = cond || (ok && guess.score[i] == BLACK)
 		if !cond {
 			g.words.delete(word)
 		}

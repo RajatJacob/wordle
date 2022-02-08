@@ -6,9 +6,11 @@ import (
 
 func main() {
 	g := game.Create()
-	g.Guess("BLACK", [game.WORD_LEN]int{0, 0, 2, 0, 0})
-	g.Guess("SMART", [game.WORD_LEN]int{0, 1, 2, 1, 0})
-	// g.Guess("MEMES", [game.WORD_LEN]int{0, 1, 0, 0, 2})
-	// g.Guess("ELDER", [game.WORD_LEN]int{2, 2, 2, 2, 2})
+	g.Guess("WATER", [game.WORD_LEN]int{0, 1, 0, 1, 1})
+	g.Guess("LEARN", [game.WORD_LEN]int{0, 1, 2, 1, 0})
+	g.Guess("GRAPE", [game.WORD_LEN]int{0, 2, 2, 0, 2})
+	g.Guess("CRAVE", [game.WORD_LEN]int{0, 2, 2, 0, 2})
+	g.Guess("ERASE", [game.WORD_LEN]int{0, 2, 2, 0, 2})
+	g.Guess("FRAME", [game.WORD_LEN]int{2, 2, 2, 2, 2})
 	g.Print()
 }
