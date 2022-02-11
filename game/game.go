@@ -45,11 +45,15 @@ func (g *Game) Print() {
 	words := g.possibleWords().elements()
 	println("\n")
 	println(len(words), "words\n")
-	if len(words) > 10 {
-		words = words[:10]
+	if len(words) > 20 {
+		words = words[:20]
 	}
 	println(strings.Join(words, "\n"))
-	println(len(g.letters), "/", 26)
+	println(len(g.letters), "/", 26, "\n")
+	for l, c := range g.letters {
+		printColouredLetter(l, c)
+	}
+	println()
 }
 
 func includes(word string, char byte) bool {
@@ -63,13 +67,12 @@ func includes(word string, char byte) bool {
 
 func (g *Game) removeRemoveInvalidWords(guess *guess, i int) {
 	for _, word := range g.words.elements() {
+		// colour, ok := g.letters[rune(word[i])]
 		cond := map[int]bool{
 			BLACK:  !includes(word, guess.word[i]),
 			YELLOW: word[i] != guess.word[i] && includes(word, guess.word[i]),
 			GREEN:  word[i] == guess.word[i],
 		}[guess.score[i]]
-		_, ok := g.letters[rune(word[i])]
-		cond = cond || (ok && guess.score[i] == BLACK)
 		if !cond {
 			g.words.delete(word)
 		}
