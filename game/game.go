@@ -19,6 +19,7 @@ func Create() Game {
 }
 
 func (g *Game) Guess(word string, scores [WORD_LEN]int) error {
+	word = strings.ToUpper(word)
 	if len(word) != WORD_LEN {
 		return errors.New("only 5-character strings are allowed")
 	}

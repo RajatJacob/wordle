@@ -1,16 +1,25 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/RajatJacob/wordle/game"
 )
 
 func main() {
 	g := game.Create()
-	g.Guess("CRANE", [game.WORD_LEN]int{1, 1, 0, 0, 1})
-	g.Guess("MERCY", [game.WORD_LEN]int{0, 1, 1, 1, 0})
-	g.Guess("ULCER", [game.WORD_LEN]int{2, 2, 2, 2, 2})
-	// g.Guess("CRAVE", [game.WORD_LEN]int{0, 2, 2, 0, 2})
-	// g.Guess("ERASE", [game.WORD_LEN]int{0, 2, 2, 0, 2})
-	// g.Guess("FRAME", [game.WORD_LEN]int{2, 2, 2, 2, 2})
-	g.Print()
+	var e error = nil
+	for e == nil {
+		var word string
+		var scores [game.WORD_LEN]int
+		fmt.Scanf("%s", &word)
+		for i := range scores {
+			fmt.Scanf("%d", &scores[i])
+		}
+		e = g.Guess(word, scores)
+		if e != nil {
+			panic(e)
+		}
+		g.Print()
+	}
 }
